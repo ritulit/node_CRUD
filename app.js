@@ -64,7 +64,7 @@ app.post("/api/people", (req, res) => {
 
     let peopleArr =JSON.parse(fs.readFileSync("./people.json"));
     let newPerson = new Person.PersonClassPointer();
-    console.log(`${JSON.stringify(req.body)}`);
+  
 
     try {
         for (key in req.body) {
@@ -89,17 +89,34 @@ app.put("/api/people", (req, res) => {
     let peopleArr =JSON.parse(fs.readFileSync("./people.json"));
 
     let pointerToPerson = peopleArr.find(element => element._name == req.query.name);
+    let editPerson = new Person.PersonClassPointer();
    
     if (pointerToPerson) {
-        for (key in req.body) {
-            pointerToPerson["_"+key] = req.body[key];
+       try{
+            for (key in req.body) {
+             if(key!="name")
+            editPerson[key] = req.body[key];
+            
+            }
+             for (edit_key in req.body) {
+                console.log(this.edit_key);
+                if(this=="name" && (req.body['name']<3 || req.body['name']>15))
+                {res.status(400);
+                res.send("Person cannot be edited name is invalid");}
+                else
+                pointerToPerson["_"+edit_key] = req.body[edit_key];
+            }
+            //save the updates to the file
+            fs.writeFileSync("people.json", JSON.stringify(peopleArr));
+
+           res.status(200);
+           res.send("Person edited in the file");
+       } 
+        
+        catch(err){
+            res.status(400);
+            res.send("Person cannot be edited");
         }
-
-        //save the updates to the file
-        fs.writeFileSync("people.json", JSON.stringify(peopleArr));
-
-        res.status(200);
-        res.send("Person edited in the file");
     } else {
         res.status(400);
         res.send("No such person in the file");

@@ -15,7 +15,6 @@ class Person {
     
     //should be between 0-120
     set age(value){
-        console.log(value);
         if (parseInt(value) < 0 || parseInt(value) > 120)
         throw new Error(`Age must be between 0 to 120`);
         else
@@ -31,9 +30,7 @@ class Person {
     //should be 3-15 chars and unique
     set name(value){
        
-        let indexOfName = JSON.parse(fs.readFileSync("./people.json")).findIndex(el => el._name == value);
-        console.log(indexOfName);
-       
+        let indexOfName = JSON.parse(fs.readFileSync("./people.json")).findIndex(el => el._name == value);       
         if(value.length>=3 && value.length<=15 && indexOfName==-1)
         this._name=value;
         else{
